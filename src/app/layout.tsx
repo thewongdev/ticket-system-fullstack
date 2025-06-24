@@ -1,7 +1,9 @@
 import "./globals.css";
+import { LucideKanban } from "lucide-react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 import { homePath, ticketsPath } from "@/paths";
 
 const geistSans = Geist({
@@ -39,15 +41,18 @@ export default function RootLayout({
           <div>
             <Link
               href={homePath()}
-              className="text-lg font-bold"
+              className={buttonVariants({ variant: "ghost" })}
             >
-              Home
+              <LucideKanban />
+              <h1 className="ml-[-4px] text-lg font-semibold">
+                TicketTrail
+              </h1>
             </Link>
           </div>
           <div>
             <Link
               href={ticketsPath()}
-              className="text-sm underline"
+              className={buttonVariants({ variant: "outline" })}
             >
               Tickets
             </Link>
