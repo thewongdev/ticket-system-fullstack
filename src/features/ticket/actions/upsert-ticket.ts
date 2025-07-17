@@ -22,16 +22,6 @@ export const upsertTicket = async (
     create: data, // create if id does not exist
   });
 
-  // await prisma.ticket.update({
-  //   where: {
-  //     id,
-  //   },
-  //   data: {
-  //     title: data.title as string,
-  //     content: data.content as string,
-  //   },
-  // });
-
   revalidatePath(ticketsPath());
 
   // if id exists, redirect to ticket detail page
