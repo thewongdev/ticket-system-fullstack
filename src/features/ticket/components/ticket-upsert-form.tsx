@@ -1,7 +1,10 @@
 "use client";
 import { Ticket } from "@prisma/client";
-import { useActionState } from "react";
-import { DatePicker } from "@/components/date-picker";
+import { useActionState, useRef } from "react";
+import {
+  DatePicker,
+  ImperativeHandleDatePicker,
+} from "@/components/date-picker";
 import { FieldError } from "@/components/form/field-error";
 import { Form } from "@/components/form/form";
 import { SubmitButton } from "@/components/form/submit-button";
@@ -22,9 +25,16 @@ const TicketUpsertForm = ({ ticket }: TicketUpsertFormProps) => {
     EMPTY_ACTION_STATE // initial state
   );
 
+  const datePickerImperativeHandleRef =
+    useRef<ImperativeHandleDatePicker>(null);
+
+  const handleSuccess = () => {
+    datePickerImperativeHandleRef.current?.reset();
+  };
+
   return (
     // abstract form to separate Form component
-    <Form action={action} actionState={actionState}>
+    <Form action={action} actionState={actionState} onSuccess={handleSuccess}>
       <Label htmlFor="title">Title </Label>
       <Input
         id="title"
@@ -62,6 +72,11 @@ const TicketUpsertForm = ({ ticket }: TicketUpsertFormProps) => {
           /> */}
 
           <DatePicker
+            // use key here to force re-render of datepicker when actionState changes
+            // when key changes, the date from useState in DatePicker will be reset
+            // key={actionState.timestamp}
+
+            imperativeHandleRef={datePickerImperativeHandleRef}
             id="deadline"
             name="deadline"
             defaultValue={
@@ -73,7 +88,7 @@ const TicketUpsertForm = ({ ticket }: TicketUpsertFormProps) => {
         </div>
 
         <div className="w-1/2">
-          <Label htmlFor="bount">Bounty ($)</Label>
+          <Label htmlFor="bounty">Bounty ($)</Label>
           <Input
             id="bounty"
             name="bounty"
@@ -84,6 +99,8 @@ const TicketUpsertForm = ({ ticket }: TicketUpsertFormProps) => {
               (ticket?.bounty ? fromCent(ticket.bounty) : "")
             }
           />
+
+          <FieldError actionState={actionState} name="bounty" />
         </div>
       </div>
 

@@ -2,7 +2,7 @@
 
 import { format } from "date-fns";
 import { LucideChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useImperativeHandle, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -11,19 +11,38 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
+export type ImperativeHandleDatePicker = {
+  reset: () => void;
+};
+
 type DatePickerProps = {
   id: string;
   name: string;
   defaultValue?: string | undefined;
+  imperativeHandleRef?: React.Ref<ImperativeHandleDatePicker>;
 };
 
-const DatePicker = ({ id, name, defaultValue }: DatePickerProps) => {
+const DatePicker = ({
+  id,
+  name,
+  defaultValue,
+  imperativeHandleRef,
+}: DatePickerProps) => {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(
     defaultValue ? new Date(defaultValue) : new Date()
   );
 
+  useImperativeHandle(imperativeHandleRef, () => ({
+    reset: () => setDate(new Date()),
+  }));
+
   const formattedStringDate = date ? format(date, "yyyy-MM-dd") : "";
+
+  const handleSelect = (selectedDate: Date | undefined) => {
+    setDate(selectedDate);
+    setOpen(false);
+  };
 
   return (
     <div className="flex flex-col gap-3">
@@ -47,10 +66,7 @@ const DatePicker = ({ id, name, defaultValue }: DatePickerProps) => {
             mode="single"
             selected={date}
             captionLayout="dropdown"
-            onSelect={(date) => {
-              setDate(date);
-              setOpen(false);
-            }}
+            onSelect={handleSelect}
           />
         </PopoverContent>
       </Popover>
