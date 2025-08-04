@@ -1,13 +1,13 @@
-import {
-  LucideCircleCheck,
-  LucideFileText,
-  LucidePencil,
-} from "lucide-react";
+import { LucideCircleCheck, LucideFileText, LucidePencil } from "lucide-react";
 
-const TICKET_ICONS = {
+export const TICKET_ICONS = {
+  OPEN: <LucideFileText />,
   DONE: <LucideCircleCheck />,
   IN_PROGRESS: <LucidePencil />,
-  OPEN: <LucideFileText />,
 };
 
-export { TICKET_ICONS };
+export const TICKET_STATUS_LABELS = {
+  OPEN: "Open",
+  DONE: "Done",
+  IN_PROGRESS: "In Progress",
+};
