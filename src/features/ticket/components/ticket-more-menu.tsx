@@ -29,9 +29,18 @@ const TicketMoreMenu = ({ ticket, trigger }: TicketMoreMenuProps) => {
   );
 
   const handleUpdateTicketStatus = async (value: string) => {
-    // save toActionState from updateTicketStatus to result so we can show toast message
-    const result = await updateTicketStatus(ticket.id, value as TicketStatus);
+    // save entire promise into a variable
+    const promise = updateTicketStatus(ticket.id, value as TicketStatus);
 
+    // show toast message with loading state
+    toast.promise(promise, {
+      loading: "Updating ticket status...",
+    });
+
+    // now we await the promise and get the result
+    const result = await promise;
+
+    // show toast message with success or error state
     if (result.status === "ERROR") {
       toast.error(result.message);
     } else {
