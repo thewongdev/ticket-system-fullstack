@@ -1,3 +1,4 @@
+import { cloneElement, useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -7,12 +8,12 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
+  // AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ActionState } from "./form/utils/to-action-state";
 import { Button } from "./ui/button";
 
-type ConfirmDialogProps = {
+type UseConfirmDialogProps = {
   title?: string;
   description?: string;
   // action: () => void;
@@ -20,19 +21,30 @@ type ConfirmDialogProps = {
   trigger: React.ReactElement;
 };
 
-const ConfirmDialog = ({
+const useConfirmDialog = ({
   title = "Are you absolutely sure?",
   description = "This action cannot be undone. Make sure you understand the consequences.",
   action,
   trigger,
-}: ConfirmDialogProps) => {
+}: UseConfirmDialogProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   // since form action requires a promise, we need to wrap the action in a promise
   const formAction = async () => {
     await action();
   };
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+
+  // AlertDialogTrigger originally is in <AlertDialog></AlertDialog> from shadcn. Now we've
+  // extracted it out, so we need to make <AlertDialog> a controlled component
+  // other issue is we can't actually use AlertDialogTrigger here, we need to clone it
+  // <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+  const dialogTrigger = cloneElement(trigger, {
+    onClick: () => setIsOpen((prevState) => !prevState),
+  } as React.HTMLAttributes<HTMLElement>);
+
+  const dialog = (
+    // make <AlertDialog> a controlled component now that we've extracted AlertDialogTrigger out
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
@@ -49,6 +61,8 @@ const ConfirmDialog = ({
       </AlertDialogContent>
     </AlertDialog>
   );
+
+  return [dialogTrigger, dialog];
 };
 
-export { ConfirmDialog };
+export { useConfirmDialog };
