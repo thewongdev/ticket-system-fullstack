@@ -63,7 +63,7 @@ const useConfirmDialog = ({
             <Form
               action={formAction}
               actionState={actionState}
-              onSuccess={handleSuccess}
+              onSuccess={handleSuccess} // close dialog on success
             >
               {/* <Button type="submit">Confirm</Button> */}
               <SubmitButton label="Confirm" />
